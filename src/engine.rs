@@ -35,7 +35,7 @@ impl Engine {
         self.board = Board::from_str(&fen)?;
     }
 
-    pub fn get_move(self) -> String {
+    pub fn get_move(self) -> ChessMove {
         let mut best_move: ChessMove = ChessMove::default();
         let mut best_score = i32::MIN;
 
@@ -50,6 +50,6 @@ impl Engine {
             }
         }
 
-        best_move.to_string()
+        best_move
     }
 }
