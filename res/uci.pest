@@ -1,0 +1,50 @@
+WHITESPACE = _{ " " | "\t" }
+command = _{ (uci | debug | isready | stop | quit | position | go ) ~ NEWLINE }
+
+// Algebraic move notation
+move = ${ square ~ square ~ promotion? }
+
+square = ${ ('a'..'h' | 'A'..'H') ~ '1'..'8' }
+promotion = { ^"n" | ^"r" | ^"b" | ^"q" }
+
+// FEN
+fen_string = ${ fen_squares ~ " " ~ fen_active_color ~ " " ~ fen_castling ~ " " ~ fen_ep_square ~ " " ~ fen_halfmove ~ " " ~ fen_move_counter }
+
+fen_squares = { (fen_row ~ "/"){7} ~ fen_row }
+fen_active_color = { "b" | "w" }
+fen_castling = { "-" | (^"K" | ^"Q"){1,4} }
+fen_ep_square = { "-" | ('a'..'h' ~ ("3" | "6"))}
+fen_halfmove = { ASCII_DIGIT{1,2} }
+fen_move_counter = { ASCII_DIGIT{1,4} }
+fen_row = { (fen_piece | '1'..'8'){1,8} }
+fen_piece = { ^"p" | ^"k" | ^"n" | ^"r" | ^"b" | ^"q"}
+
+// simple commands
+uci = { "uci" }
+isready = { "isready" }
+stop = { "stop" }
+quit = { "quit" }
+
+//debug [ on | off ]
+debug = { "debug" ~ ("on" | "off") }
+
+//position [fen <fenstring> | startpos ]  moves <move_1> .... <move_i>
+position = { "position" ~ (("fen" ~ fen_string) | "startpos") ~ moves? }
+moves = { "moves" ~ move+ }
+
+//go
+go = { "go" ~ go_option* }
+go_option = { go_searchmoves | go_ponder | go_wtime | go_btime | go_winc | go_binc | go_movestogo | go_depth | go_nodes | go_mate | go_movetime | go_infinite }
+
+go_searchmoves = { "searchmoves" ~ move+}
+go_ponder = { "ponder" }
+go_wtime = { "wtime" ~ ASCII_DIGIT+ }
+go_btime = { "btime" ~ ASCII_DIGIT+ }
+go_winc = { "winc" ~ ASCII_DIGIT+ }
+go_binc = { "binc" ~ ASCII_DIGIT+ }
+go_movestogo = { "movestogo" ~ ASCII_DIGIT+ }
+go_depth = { "depth" ~ ASCII_DIGIT+ }
+go_nodes = { "nodes" ~ ASCII_DIGIT+ }
+go_mate = { "mate" ~ ASCII_DIGIT+ }
+go_movetime = { "movetime" ~ ASCII_DIGIT+ }
+go_infinite = { "infinite" }
