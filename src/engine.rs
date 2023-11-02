@@ -41,7 +41,7 @@ impl Engine {
     }
 
     #[allow(dead_code)]
-    pub fn get_move(self) -> ChessMove {
+    pub fn get_move(&self) -> ChessMove {
         let mut best_move: ChessMove = ChessMove::default();
         let mut best_score = i32::MIN;
 
